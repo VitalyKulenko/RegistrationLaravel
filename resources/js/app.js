@@ -1,0 +1,11 @@
+import './bootstrap';
+import 'htmx.org';
+import Alpine from 'alpinejs';
+import persist from '@alpinejs/persist';
+import mask from '@alpinejs/mask';
+import validate from "@colinaut/alpinejs-plugin-simple-validate";
+Alpine.plugin(persist);
+Alpine.plugin(mask);
+Alpine.plugin(validate);
+window.Alpine = Alpine;
+Alpine.start();
