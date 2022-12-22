@@ -17,6 +17,9 @@ use App\Http\Livewire\UserPagination;
 |
 */
 
+Route::get('/', function () {
+    return redirect('/registration');
+});
 Route::resource('users', UsersController::class);
 Route::resource('registration', RegistrationController::class);
 Route::post('/registration/check', [RegistrationController::class, 'check']);

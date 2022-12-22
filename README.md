@@ -3,6 +3,10 @@
 This application allows you to register participants in a virtual conference.
 Below instructions for connecting a database, creating tables and an administrator in the database, updating the style and libraries, starting the project
 
+## Install packages
+
+-  To install packages, type "npm i" on the command line
+
 ## Connect to DB
 
 - To connect to DB fill in the .env file fields "DB_CONNECTION", "DB_HOST", "DB_PORT", "DB_DATABASE", "DB_USERNAME", "DB_PASSWORD"
