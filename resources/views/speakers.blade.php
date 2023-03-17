@@ -1,7 +1,7 @@
 @extends('layouts.index')
 
 @section('index-content')
-    <div x-data="{addSpeaker: false, message: false}" class="mx-auto max-w-7xl bg-white px-20 py-10 rounded-lg my-5 relative">
+    <div x-data="{addSpeaker: false, message: false}" class="mx-auto max-w-7xl bg-white px-20 py-10 rounded-lg my-5 relative" x-cloak>
         <table class="flex flex-wrap">
             <caption class="flex text-4xl font-bold mb-6 basis-full justify-center">Speakers</caption>
             @if (Auth::user())

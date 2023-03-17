@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class RegistrationController extends Controller
 {
@@ -36,52 +37,45 @@ class RegistrationController extends Controller
      */
     public function store(Request $request)
     {
-        DB::table('users')->insert([
-            'firstName' => $_POST['firstName'],
-            'lastName' => $_POST['lastName'],
-            'phone' => $_POST['phone'],
-            'email' => $_POST['email'],
-            'country' => $_POST['country'],
-            'photo' => file_get_contents($_FILES['photo']['tmp_name']),
-            'title' => $_POST['title'],
-            'description' => $_POST['description'],
-            'date' => $_POST['date']
-        ]);
+        $user = new User();
+        $user->firstName = $request->input('firstName');
+        $user->lastName = $request->input('lastName');
+        $user->phone = $request->input('phone');
+        $user->email = $request->input('email');
+        $user->country = $request->input('country');
+        $user->photo = $request->file('photo')->getContent();
+        $user->title = $request->input('title');
+        $user->description = $request->input('description');
+        $user->date = $request->input('date');
+        $user->save();
     }
 
     public function emailFilter(Request $request)
     {
-        $users = DB::table('users')->get();
-        $email = $request->input('email');
-        foreach ($users as $user) {
-            if ($user->email === $email) {
-                $filtered = true;
-                break;
-            } else {
-                $filtered = false;
-            }
-        }
-        return $filtered;
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users,email'
+        ]);
+        return $validator->fails();
     }
 
     public function check(Request $request)
     {
-        $filtered = RegistrationController::emailFilter($request);
-        if ($filtered) {
-            echo '<div id="emailError" hx-post="/registration/checkSubmit" hx-trigger="load" hx-sync="closest form:abort" hx-target="#submit" hx-swap="outerHTML" class="pl-0.5 text-red-600">email address already exists</div>';
+        $validator = RegistrationController::emailFilter($request);
+        if ($validator) {
+            return view('layouts.emailMessageExists');
         } else {
-            echo '<div id="emailError" hx-post="/registration/checkSubmit" hx-trigger="load" hx-sync="closest form:abort" hx-target="#submit" hx-swap="outerHTML" class="pl-0.5 text-gray-300">this email is available</div>';
+            return view('layouts.emailMessageAvailable');
         }
     }
 
 
     public function checkSubmit(Request $request)
     {
-        $filtered = RegistrationController::emailFilter($request);
-        if ($filtered) {
-            echo '<button type="submit" name="submit" id="submit" class="bg-gray-600 rounded-md py-2 px-8 my-auto ml-5 text-white" disabled>Submit</button>';
+        $validator = RegistrationController::emailFilter($request);
+        if ($validator) {
+            return view('layouts.buttonSubmitDisabled');
         } else {
-            echo '<button type="submit" name="submit" id="submit" class="bg-red-600 rounded-md py-2 px-8 my-auto ml-5 text-white hover:bg-red-800 hover:shadow-lg hover:shadow-red-800/50">Submit</button>';
+            return view('layouts.buttonSubmit');
         }
     }
 

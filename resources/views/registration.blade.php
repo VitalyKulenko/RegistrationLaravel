@@ -1,7 +1,7 @@
 @extends('layouts.index')
 
 @section('index-content')
-    <form hx-post="registration" hx-encoding="multipart/form-data" hx-swap="none" @submit="localStorage.clear(), step2 =! step2, step3 =! step3" x-data="{step1: $persist(true), step2: $persist(false), step3: false, firstName: $persist(''), lastName: $persist(''), phone: $persist(''), email: $persist(''), country: $persist(''), title: $persist(''), description: $persist(''), date: $persist('')}" class="relative mx-auto max-w-7xl bg-white px-20 py-10 rounded-lg my-5" x-validate>
+    <form hx-post="registration" hx-encoding="multipart/form-data" hx-swap="none" @submit="localStorage.clear(), step2 =! step2, step3 =! step3" x-data="{step1: $persist(true), step2: $persist(false), step3: false, firstName: $persist(''), lastName: $persist(''), phone: $persist(''), email: $persist(''), country: $persist(''), title: $persist(''), description: $persist(''), date: $persist('')}" class="relative mx-auto max-w-7xl bg-white px-20 py-10 rounded-lg my-5" x-validate x-cloak>
         @csrf
         <div x-show="step1">
             <div class="absolute top-6 left-8 text-gray-400 text-2xl font-normal">
@@ -13,9 +13,9 @@
                     <input name="firstName" x-model="firstName" type="text" placeholder="First name" class="border-2 rounded-md p-1 basis-full my-1" required />
                     <input name="lastName" x-model="lastName" type="text" placeholder="Last name" class="border-2 rounded-md p-1 basis-full my-1" required />
                     <input name="phone" x-model="phone" type="text" placeholder="+99 (999) 999-9999" x-mask="+99 (999) 999-9999" class="border-2 rounded-md p-1 basis-full my-1" required />
-                    <input name="email" hx-post="/registration/check" hx-sync="closest form:abort" hx-trigger="change" hx-target="#emailError" 
+                    <input name="email" hx-post="/registration/check" hx-sync="closest form:abort" hx-trigger="change" hx-target="#emailMessage" 
                     hx-swap="outerHTML" x-model="email" type="email" placeholder="E-mail" class="border-2 rounded-md p-1 basis-full my-1" required />
-                    <div id="emailError"></div>
+                    <div id="emailMessage"></div>
                 </div>
                 <div class="flex basis-1/2 flex-wrap pl-16">
                     <div class="basis-1/2 my-2">
