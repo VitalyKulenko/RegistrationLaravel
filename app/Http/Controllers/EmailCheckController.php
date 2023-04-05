@@ -19,8 +19,7 @@ class EmailCheckController extends Controller
 
         if ($emailFilterController($request)) {
             return view('components.email-message-exists');
-        } else {
-            return view('components.email-message-available');
         }
+        return view('components.email-message-available');
     }
 }

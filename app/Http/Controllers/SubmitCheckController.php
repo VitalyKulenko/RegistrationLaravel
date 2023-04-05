@@ -19,8 +19,7 @@ class SubmitCheckController extends Controller
 
         if ($emailFilterController($request)) {
             return view('components.button-submit-disabled');
-        } else {
-            return view('components.button-submit');
         }
+        return view('components.button-submit');
     }
 }

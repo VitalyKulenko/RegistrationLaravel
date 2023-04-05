@@ -24,10 +24,10 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'firstName' => 'required',
-            'lastName' => 'required',
+            'firstName' => 'required|regex:/^[\p{Latin}\p{Cyrillic}\s]+$/u',
+            'lastName' => 'required|regex:/^[\p{Latin}\p{Cyrillic}\s]+$/u',
             'title' => 'required',
-            'date' => 'required',
+            'date' => 'required|date|after_or_equal:today',
         ];
     }
 }
