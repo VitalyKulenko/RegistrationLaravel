@@ -12,15 +12,15 @@
             <tbody class="flex flex-wrap basis-full" hx-target="closest tr" hx-swap="outerHTML">
                 <tr x-show="addSpeaker">
                     <td>
-                        <form hx-post="registration" hx-encoding="multipart/form-data" hx-swap="none" @submit="addSpeaker =! addSpeaker, message =! message, setTimeout(() => message = false, 3000)" x-validate>
+                        <form hx-post="users" hx-encoding="multipart/form-data" hx-target="#newUser" hx-swap="outerHTML" @submit="addSpeaker =! addSpeaker; message =! message; setTimeout(() => message = false, 3000)" x-validate x-cloak>
                             @csrf
                             <div class="editing flex py-3 basis-full justify-end border-b">
                                 <div class="flex flex-wrap basis-full">
                                     <input name="firstName" type="text" placeholder="First name" class="border-2 rounded-md p-1 my-1 basis-full" required/>
                                     <input name="lastName" type="text" placeholder="Last name" class="border-2 rounded-md p-1 my-1 basis-full" required/>
                                     <input name="phone" type="text" placeholder="+99 (999) 999-9999" x-mask="+99 (999) 999-9999" class="border-2 rounded-md p-1 basis-full w-full my-1" required/>
-                                    <input name="email" hx-post="/registration/check" hx-sync="closest form:abort" hx-trigger="change" hx-target="#emailError" hx-swap="outerHTML" type="email" placeholder="E-mail" class="border-2 rounded-md p-1 basis-full my-1" required />
-                                    <div id="emailError"></div>
+                                    <input name="email" hx-post="/emailCheck" hx-sync="closest form:abort" hx-trigger="change" hx-target="#emailMessage" hx-swap="outerHTML" type="email" placeholder="E-mail" class="border-2 rounded-md p-1 basis-full my-1" required />
+                                    <div id="emailMessage"></div>
                                 </div>
                                 <div class="flex flex-wrap basis-full content-start">
                                     <input name="title" type="text" placeholder="Title of the speech topic" class="border-2 rounded-md p-1 basis-full my-1 ml-2" required />
@@ -37,10 +37,10 @@
                                         <option>Ukraine</option>
                                     </select>
                                     <input name="date" class="border-2 rounded-md p-1 basis-full my-1 ml-2 basis-full" type="date" min="{{ date('Y-m-d') }}" required>
-                                    <input class="my-1 ml-2 basis-full" name="photo" type="file" required>
+                                    <input class="my-1 ml-2 basis-full" name="photo" type="file">
                                 </div>
                                 <div class="flex flex-wrap justify-end content-start mt-1">
-                                    <button id="submit" type="submit" name="submit" class="bg-red-600 rounded-md py-2 ml-5 w-28 text-white hover:bg-red-800 hover:shadow-lg hover:shadow-red-800/50">Save</button>
+                                    <button id="submit" type="submit" name="submit" class="bg-red-600 rounded-md py-2 ml-5 w-28 text-white hover:bg-red-800 hover:shadow-lg hover:shadow-red-800/50">Submit</button>
                                     <button @click="addSpeaker = ! addSpeaker" type="button" class="bg-gray-600 rounded-md py-2 ml-5 mt-2 w-28 text-white hover:bg-gray-800 hover:shadow-lg hover:shadow-gray-800/50">Cancel</button>
                                 </div>
                             </div>
@@ -56,19 +56,26 @@
                 </tr>
                 @foreach ($users as $user)
                     <tr class="flex basis-full border-b border-gray-300 py-3">
-                        <td class="basis-1/5 mr-5 my-auto"><img src="data:image/jpg;base64,{{ base64_encode($user->photo) }}"></td>
+                        <td class="basis-1/5 mr-5 my-auto">
+                            @if ($user->photo)
+                                <img src="{{ asset('storage/' . $user->photo) }}">
+                            @else
+                                <img src="{{ url('/logos/man-2.svg') }}">
+                            @endif
+                        </td>
                         <td class="basis-1/5 my-auto text-lg">{{ $user->firstName }}</td>
                         <td class="basis-1/5 mr-5 my-auto text-lg">{{ $user->lastName }}</td>
                         <td class="basis-full my-auto text-lg">{{ $user->title }}</td>
                         <td class="basis-1/4 my-auto text-lg">{{ $user->date }}</td>
                         @if (Auth::user())
                             @if (Auth::user()->role == 'admin')
-                                <td class="basis-1/12 my-auto text-lg"><div hx-get="{{ route('users.edit', $user->userID) }}" hx-trigger="click"><img class="w-4 ml-auto" src="{{ url('/logos/edit.svg') }}" alt="edit"></div></td>
-                                <td hx-confirm="Are you sure?" class="basis-1/12 my-auto text-lg"><div hx-delete="{{ route('users.destroy', $user->userID) }}"><img class="w-4 ml-auto" src="{{ url('/logos/delete.svg') }}" alt="delete"></div></td>
+                                <td class="basis-1/12 my-auto text-lg"><div hx-get="{{ route('users.edit', $user->id) }}" hx-trigger="click"><img class="w-4 ml-auto" src="{{ url('/logos/edit.svg') }}" alt="edit"></div></td>
+                                <td hx-confirm="Are you sure?" class="basis-1/12 my-auto text-lg"><div hx-delete="{{ route('users.destroy', $user->id) }}"><img class="w-4 ml-auto" src="{{ url('/logos/delete.svg') }}" alt="delete"></div></td>
                             @endif
                         @endif
                     </tr>
                 @endforeach
+                <tr id="newUser"></tr>
             </tbody>
         </table>
         <div class="pagination mt-4" hx-boost="true">

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
 
 class UsersController extends Controller
 {
@@ -15,8 +15,27 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = DB::table('users')->paginate(10);
-        return view('speakers', compact('users'));
+        $users = User::paginate(10);
+        return view('speakers', ['users' => $users]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $data = $request->all();
+    
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('public');
+            $data['photo'] = $request->file('photo')->hashName();
+        }
+        
+        $user = User::create($data);
+        return view('layouts.showSpeaker', ['user' => $user]);
     }
 
     /**
@@ -27,7 +46,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = DB::table('users')->where('userID', $id)->first();
+        $user = User::where('id', $id)->first();
         return view('layouts.showSpeaker', ['user' => $user]);
     }
 
@@ -39,7 +58,7 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = DB::table('users')->where('userID', $id)->first();
+        $user = User::where('id', $id)->first();
         return view('layouts.editSpeaker', ['user' => $user]);
     }
 
@@ -50,21 +69,11 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $method = $request->method();
-        if ('PUT' === $method) {
-            $putData = $request->only(['firstName', 'lastName', 'title', 'date']);
-            DB::table('users')
-                ->where('userID', $id)
-                ->update([
-                    'firstName' => $putData['firstName'],
-                    'lastName' => $putData['lastName'],
-                    'title' => $putData['title'],
-                    'date' => $putData['date'],
-                ]);
-        }
-        $user = DB::table('users')->where('userID', $id)->first();
+        $user = User::where('id', $id)->first();
+        $validatedData = $request->validated();
+        $user->update($validatedData);
         return view('layouts.showSpeaker', ['user' => $user]);
     }
 
@@ -76,6 +85,6 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('users')->where('userID', $id)->delete();
+        User::where('id', $id)->delete();
     }
 }

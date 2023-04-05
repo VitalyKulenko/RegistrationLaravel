@@ -6,7 +6,7 @@
         <input name="date" placeholder="Date" value="{{ $user->date }}" type="date" min="{{ date('Y-m-d') }}" class="border-2 rounded-md p-1 my-1 ml-2 basis-full">
     </td>
     <td class="flex flex-wrap justify-end content-start mt-1">
-        <button class="bg-red-600 rounded-md py-2 w-28 text-white hover:bg-red-800 hover:shadow-lg hover:shadow-red-800/50" hx-put="/users/{{ $user->userID }}" hx-include="closest tr">Save</button>
-        <button class="bg-gray-600 rounded-md py-2 mt-2 w-28 text-white hover:bg-gray-800 hover:shadow-lg hover:shadow-gray-800/50" hx-get="/users/{{ $user->userID }}">Cancel</button>
+        <button class="bg-red-600 rounded-md py-2 w-28 text-white hover:bg-red-800 hover:shadow-lg hover:shadow-red-800/50" hx-put="/users/{{ $user->id }}" hx-include="closest tr">Save</button>
+        <button class="bg-gray-600 rounded-md py-2 mt-2 w-28 text-white hover:bg-gray-800 hover:shadow-lg hover:shadow-gray-800/50" hx-get="/users/{{ $user->id }}">Cancel</button>
     </td>
 </tr>
