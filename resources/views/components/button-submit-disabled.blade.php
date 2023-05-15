@@ -1,1 +1,1 @@
-<button type="submit" name="submit" id="submit" class="bg-gray-600 rounded-md py-2 px-8 my-auto ml-5 text-white" disabled>Submit</button>
+<button type="submit" name="submit" id="submit" class="bg-gray-600 rounded-md py-2 px-8 my-auto ml-5 text-white" disabled>Next</button>

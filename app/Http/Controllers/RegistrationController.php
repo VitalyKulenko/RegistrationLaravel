@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
+use App\Http\Requests\StepOneRequest;
+use Illuminate\Http\RedirectResponse;
 
 class RegistrationController extends Controller
 {
@@ -23,15 +23,14 @@ class RegistrationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StepOneRequest $request)
     {
         $data = $request->all();
-    
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('public');
             $data['photo'] = $request->file('photo')->hashName();
         }
-        
-        $user = User::create($data);
+        $request->session()->put('data', $data);
+        return view('components.step2');
     }
 }
